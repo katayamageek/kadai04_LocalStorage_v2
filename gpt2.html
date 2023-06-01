@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="js/jquery-2.1.3.min.js"></script>
+    <title>gpt2</title>
+</head>
+
+<body>
+    <!-- 音声データをローカルストレージに保存する -->
+    <input type="file" id="audio-input">
+    <button id="save-button">Save Audio</button>
+    <script>
+        $('#save-button').click(function () {
+            var file = $('#audio-input')[0].files[0];
+
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var base64Audio = e.target.result.split(',')[1];
+                localStorage.setItem('audio', base64Audio);
+                alert("Audio saved in local storage.");
+            };
+            reader.readAsDataURL(file);
+        });
+    </script>
+    <!-- 保存したデータをHTMLで表示する -->
+    <button id="display-button">Display Audio</button>
+    <p id="audio-data"></p>
+    <script>
+        $('#display-button').click(function () {
+            var audioData = localStorage.getItem('audio');
+            if (audioData) {
+                $('#audio-data').text(audioData);
+            } else {
+                alert("No audio data found in local storage.");
+            }
+        });
+    </script>
+    <!-- 保存したデータの音声を再生する -->
+    <button id="play-button">Play Audio</button>
+    <audio id="audio-player" controls></audio>
+    <script>
+        $('#play-button').click(function () {
+            var audioData = localStorage.getItem('audio');
+            if (audioData) {
+                var audioSrc = 'data:audio/*;base64,' + audioData;
+                $('#audio-player').attr('src', audioSrc);
+            } else {
+                alert("No audio data found in local storage.");
+            }
+        });
+
+    </script>
+
+
+
+
+</body>
+
+</html>
