@@ -6,76 +6,79 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="js/jquery-2.1.3.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
     <title>gpt2+hhouji</title>
 </head>
 
 <body>
-    <p>▽データをアップロードします</p>
-    <!-- 音声データをローカルストレージに保存する -->
-    <input type="text" id="key" placeholder="タイトルを入力">
-    <input type="file" id="audio-input">
-    <button id="save-button">Save Audio</button>
-    <button id="clear-button">Clear</button>
-    <script>
-        //1.Save クリックイベント
-        $('#save-button').on("click", function () {
-            const key = $("#key").val();
-            var file = $('#audio-input')[0].files[0];
-            var reader = new FileReader();
-            reader.onload = function (e) {
-                var base64Audio = e.target.result.split(',')[1];
-                localStorage.setItem(key, base64Audio);
-                alert("Audio saved in local storage.");
-                // htmlで表示する
-                const html = '<tr><th>' + key + '</th><td>' + base64Audio + '</td></tr>';
-                $("#list").append(html);
-                // ↓このあとドロップダウンに反映するために必要なページ更新を自動で行ってしまうプログラム
-                location.reload();
-            };
-            reader.readAsDataURL(file);
-        });
+    <div class="container">
+        <div class="item">
+            <div class="item-right">
+                <p>▽データをアップロードします</p>
+                <!-- 音声データをローカルストレージに保存する -->
+                <input type="text" id="key" placeholder="タイトルを入力" class="input-key">
+                <input type="file" id="audio-input">
+                <button id="save-button">Save Audio</button>
 
-        //2.clear クリックイベント
-        $("#clear-button").on("click", function () {
-            localStorage.clear();
-            $("#list").empty();
-        });
+                <script>
+                    //1.Save クリックイベント
+                    $('#save-button').on("click", function () {
+                        const key = $("#key").val();
+                        const file = $('#audio-input')[0].files[0];
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            const base64Audio = e.target.result.split(',')[1];
+                            localStorage.setItem(key, base64Audio);
+                            alert("Audio saved in local storage.");
+                            // htmlで表示する
+                            const html = '<tr><th>' + key + '</th><td>' + base64Audio + '</td></tr>';
+                            $("#list").append(html);
+                            // ↓このあとドロップダウンに反映するために必要なページ更新を自動で行ってしまうプログラム
+                            location.reload();
+                        };
+                        reader.readAsDataURL(file);
+                    });
 
-    </script>
 
-    <br>
-    <p>▽再生するデータを選択します</p>
-    <!-- 再生するデータを選択するためのドロップダウン -->
-    <select id="keySelect"></select>
-    <!-- ↓のGeyDataボタンは<button id="play-button">が兼ねることになったのでトリ -->
-    <!-- <input type="button" value="Get Data" id="getDataButton" /> -->
-    <div id="data"></div>
+                </script>
 
-    <script>
-        $(document).ready(function () {
-            // ローカルストレージの全てのキーを取得し、ドロップダウンリストを生成します。
-            for (var i = 0; i < localStorage.length; i++) {
-                var key = localStorage.key(i);
-                $('#keySelect').append($('<option>', {
-                    value: key,
-                    text: key
-                }));
-            }
-            // ↓ここは元資料がテキスト表示させるための者だったのでトリ。代わりに音声再生の「var audioData = localStorage.getItem(key);」の（key）に紐づけた
-            // // ユーザーがボタンをクリックしたときに、選択されたキーに対応するデータを取得します。
-            // $('#getDataButton').click(function () {
-            //     var key = $('#keySelect').val();
-            //     var data = localStorage.getItem(key);
-            //     $('#data').text(key);
-            // });
-        });
-    </script>
+                <br>
 
-    <p>▽データを再生します</p>
-    <!-- 保存したデータの音声を再生する -->
-    <button id="play-button">Play Audio</button>
-    <audio id="audio-player" controls></audio>
-    <!-- <script>
+
+                <p>▽再生する</p>
+                <!-- 再生するデータを選択するためのドロップダウン -->
+                <select id="keySelect" class="keyselect"></select>
+                <!-- ↓のGeyDataボタンは<button id="play-button">が兼ねることになったのでトリ -->
+                <!-- <input type="button" value="Get Data" id="getDataButton" /> -->
+                <button id="play-button">Play Audio</button>
+
+                <div id="data"></div>
+                <script>
+                    $(document).ready(function () {
+                        // ローカルストレージの全てのキーを取得し、ドロップダウンリストを生成します。
+                        for (var i = 0; i < localStorage.length; i++) {
+                            var key = localStorage.key(i);
+                            $('#keySelect').append($('<option>', {
+                                value: key,
+                                text: key
+                            }));
+                        }
+                        // ↓ここは元資料がテキスト表示させるための者だったのでトリ。代わりに音声再生の「var audioData = localStorage.getItem(key);」の（key）に紐づけた
+                        // // ユーザーがボタンをクリックしたときに、選択されたキーに対応するデータを取得します。
+                        // $('#getDataButton').click(function () {
+                        //     var key = $('#keySelect').val();
+                        //     var data = localStorage.getItem(key);
+                        //     $('#data').text(key);
+                        // });
+                    });
+
+
+
+                </script>
+
+                <!-- 保存したデータの音声を再生する -->
+                <audio id="audio-player" controls></audio>
+                <!-- <script>
         $('#play-button').click(function () {
             var audioData = localStorage.getItem('audio');
             if (audioData) {
@@ -87,49 +90,67 @@
         });
     </script> -->
 
-    <script>
-        $('#play-button').on("click", function () {
-            var key = $('#keySelect').val();
-            // ★宣言：audioDataを、↓この()の中身が再生するkeyであると指定するものである
-            var audioData = localStorage.getItem(key);
-            if (audioData) {
-                var byteCharacters = atob(audioData); // Base64データをバイト文字列にデコード
+                <script>
+                    $('#play-button').on("click", function () {
+                        var key = $('#keySelect').val();
+                        // ★宣言：audioDataを、↓この()の中身が再生するkeyであると指定するものである
+                        var audioData = localStorage.getItem(key);
+                        if (audioData) {
+                            var byteCharacters = atob(audioData); // Base64データをバイト文字列にデコード
 
-                // バイト文字列をバイト配列に変換
-                var byteNumbers = new Array(byteCharacters.length);
-                for (var i = 0; i < byteCharacters.length; i++) {
-                    byteNumbers[i] = byteCharacters.charCodeAt(i);
-                }
-                var byteArray = new Uint8Array(byteNumbers);
+                            // バイト文字列をバイト配列に変換
+                            var byteNumbers = new Array(byteCharacters.length);
+                            for (var i = 0; i < byteCharacters.length; i++) {
+                                byteNumbers[i] = byteCharacters.charCodeAt(i);
+                            }
+                            var byteArray = new Uint8Array(byteNumbers);
 
-                // Blobを作成し、それをURLとしてaudio要素にセット
-                var blob = new Blob([byteArray], { type: 'audio/mp3' }); // 'audio/mp3'はファイル形式に応じて変更してください
-                var url = URL.createObjectURL(blob);
-                $('#audio-player').attr('src', url);
-                // ↑もろもろ変換処理を済ませて
-                // ↓自動的に再生するようプログラムも追加した
-                $("#audio-player").get(0).play();
-            } else {
-                alert("No audio data found in local storage.");
-            }
-        });
-    </script>
-    <br>
-    <p>▽登録済みデータ一覧</p>
-    <table id="list">
-        <!-- ここに追加データが挿入される -->
-    </table>
-    <script>
-        //3.ページ読み込み：保存データ取得表示
-        for (let i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i);
-            const value = localStorage.getItem(key);
-            const html = '<tr><th>' + key + '</th><td>' + value + '</td></tr>';
-            $("#list").append(html);
-        }
-    </script>
+                            // Blobを作成し、それをURLとしてaudio要素にセット
+                            var blob = new Blob([byteArray], { type: 'audio/mp3' }); // 'audio/mp3'はファイル形式に応じて変更してください
+                            var url = URL.createObjectURL(blob);
+                            $('#audio-player').attr('src', url);
+                            // ↑もろもろ変換処理を済ませて
+                            // ↓自動的に再生するようプログラムも追加した
+                            $("#audio-player").get(0).play();
+                        } else {
+                            alert("No audio data found in local storage.");
+                        }
+                    });
+                </script>
+                <br>
+            </div>
+        </div>
+
+        <div class="item">
+            <div class="item-left">
+                <p>▽登録済みデータ一覧</p>
+                <button id="clear-button">Clear</button>
+                <table id="list">
+                    <!-- ここに追加データが挿入される -->
+                </table>
+
+                <script>
+                    //2.clear クリックイベント
+                    $("#clear-button").on("click", function () {
+                        localStorage.clear();
+                        $("#list").empty();
+                    });
 
 
+
+                    //3.ページ読み込み：保存データ取得表示
+                    for (let i = 0; i < localStorage.length; i++) {
+                        const key = localStorage.key(i);
+                        const value = localStorage.getItem(key);
+                        // const html = '<tr><th>' + key + '</th><td>' + value + '</td></tr>';
+                        // UI上、値は不要なので↓のように削除
+                        const html = '<tr><td>' + key + '</td><tr>';
+                        $("#list").append(html);
+                    }
+                </script>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
