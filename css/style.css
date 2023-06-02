@@ -72,7 +72,7 @@ textarea {
 table {
   margin: 20px 3%;
   /* border: 1px solid #8dc3f5; */
-  width: 96%;
+  width: 90%;
 }
 /* th {
   width: 30%;
@@ -92,17 +92,46 @@ td {
 .container {
   display: grid; /*「Container」を「Grid Layout」に指定*/
   width: 100%; /*コンテナの余白幅を600pxに指定*/
-  grid-template-columns: 60% 40%; /*200pxの列トラックを3列表示させる*/
+  grid-template-columns: 75% 25%; /*200pxの列トラックを3列表示させる*/
+}
+
+.item {
+  grid-row: 1 / 3;
 }
 
 .item-right {
-  height: 100%;
+  height: 400px;
   border: 5px ridge rgb(233, 233, 233);
 }
 
+.library {
+  margin-top: 3%;
+  margin-left: 3%;
+  margin-right: 3%;
+  border: 3px inset;
+  height: 300px;
+  overflow: auto;
+}
+
 .item-left {
-  height: 100%;
+  height: 400px;
   border: 5px ridge rgb(233, 233, 233);
+}
+
+.item-low {
+  height: 50px;
+  background-color: #bdbdbd;
+  grid-row: 2;
+  grid-column: 1 / 3;
+  border: 5px ridge rgb(233, 233, 233);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.audio-player {
+  height: 30px;
+  width: 300px;
 }
 
 .input-key {
@@ -111,4 +140,18 @@ td {
 
 .keyselect {
   width: 300px;
+}
+
+.play-button {
+  color: rgb(255, 255, 255);
+  background-color: red;
+  /* ↓文字間を広げる「transition」プロパティのアニメーションを実装 */
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+}
+
+.play-button:hover {
+  color: white;
+  background: rgb(255, 164, 199);
+  letter-spacing: 0.3em;
 }
